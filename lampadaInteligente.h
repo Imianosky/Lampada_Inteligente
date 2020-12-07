@@ -16,12 +16,14 @@
 #include <WiFiClient.h>
 #include <SPI.h>
 #include <esp_task_wdt.h>
+#include <SoftwareSerial.h>
+#include<time.h> 
 
 
 #define BLYNK_PRINT Serial
 
 
-#define INACTIVE_TIME 7000       // tempo de inatividade no pir
+#define INACTIVE_TIME 20000       // tempo de inatividade no pir
 
 
 #define LEDPIN 2                // LED
@@ -29,20 +31,19 @@
 #define LDRPIN 34               // LDR
 
 
-#define PIR_DEBUG
+#undef PIR_DEBUG
 #undef LDR_DEBUG
 #undef SCHEDULED_TIME_DEBUG
 
 
 BlynkTimer timer;
 
-
 const char* ntpServer         = "pool.ntp.org";       // servidor NTP
-const long  gmtOffsetSec      = 0;                    // definição fuso horario
-const int   daylightOffsetSec = -3600 * 3;                   
+const long  gmtOffsetSec      = -10800;               // definição fuso horario
+const int   daylightOffsetSec = 0;                   
 struct tm   h;                                        // struct de horário atual
 int         hourNow, minNow, secNow, wDayNow;         // variaveis separadas p cada valor
-
+char message[]    = "";
 
 char auth[] = "KjRjRY08vK7yx-8ZGu26c7vg6uqHyjZM";     // autenticacao BlynkApp
 char ssid[] = "Carol";                                // autenticacao wifi
@@ -64,11 +65,10 @@ int           startHour = -1,                         // hora, min e seg program
               startSec  = -1, 
               stopSec   = -1;
 
-              
-int           week[7] = {0, 0, 0, 0, 0, 0, 0};        // dias da semana com horario programado
 
 unsigned long buttonActivateTime;                     // momento de ativação do botao
 unsigned long pirActivateTime = 0;                    // momento de ativacao do PIR
+unsigned long changeTime      = 0;                    // momento de mudança automatica do LED
 
 
 #endif /*LAMPADA_INTELIGENTE_H*/
